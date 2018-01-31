@@ -33,6 +33,7 @@ class BurgerIngredient extends Component {
         ingredient = null;
 
     }
+    return ingredient;
   }
 }
 
