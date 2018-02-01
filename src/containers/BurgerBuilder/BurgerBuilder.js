@@ -12,20 +12,17 @@ const INGREDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      ingredients: {
-        salat: 1,
-        bacon: 1,
-        cheese: 2,
-        meat: 1
-      },
-      totalPrice: 4,
-    }
-  }
+  state = {
+    ingredients: {
+      salat: 1,
+      bacon: 1,
+      cheese: 2,
+      meat: 1
+    },
+    totalPrice: 4,
+  };
 
-  addIngredientHandler(type) {
+  addIngredientHandler = (type) => {
     const newIngredients = this.state.ingredients;
     newIngredients[type] += 1;
 
@@ -36,29 +33,35 @@ class BurgerBuilder extends Component {
       ingredients: newIngredients,
       totalPrice: newPrice
     })
-  }
+  };
 
-  dropIngredientHandler(type) {
+  dropIngredientHandler = (type) => {
     const newIngredients = this.state.ingredients;
-    newIngredients[type] -= 1;
+    if (newIngredients[type] > 0) {
+      newIngredients[type] -= 1;
+      let newPrice = this.state.totalPrice;
+      newPrice -= INGREDIENT_PRICES[type];
 
-    let newPrice = this.state.totalPrice;
-    newPrice -= INGREDIENT_PRICES[type];
-
-    this.setState({
-      ingredients: newIngredients,
-      totalPrice: newPrice
-    })
-  }
-
+      this.setState({
+        ingredients: newIngredients,
+        totalPrice: newPrice
+      })
+    }
+  };
 
   render() {
+    let disabledInfo = {...this.state.ingredients};
+    for (let key in disabledInfo) {
+      disabledInfo[key] = disabledInfo[key] <= 0;
+    }
     return (
       <Aux>
         <Burger ingredients={this.state.ingredients}/>
-        <BuildControls ingredientAdd={this.addIngredientHandler.bind(this)}
-                       ingredientDrop={this.dropIngredientHandler.bind(this)}/>
-        {this.state.totalPrice}
+        <BuildControls ingredientAdd={this.addIngredientHandler}
+                       ingredientDrop={this.dropIngredientHandler}
+                       price={this.state.totalPrice}
+                       disabled={disabledInfo}
+        />
       </Aux>
     )
   }
