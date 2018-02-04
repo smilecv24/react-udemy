@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Aux from '../../hoc/Aux_wrapper';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICES = {
   salat: 0.5,
@@ -20,7 +22,8 @@ class BurgerBuilder extends Component {
       meat: 1
     },
     totalPrice: 4,
-    purchasable: true
+    purchasable: true,
+    purchasing: false
   };
 
   updatePurchaseState(ingredients) {
@@ -63,6 +66,14 @@ class BurgerBuilder extends Component {
     }
   };
 
+  purchaseHandler = () => {
+    this.setState({purchasing: true})
+  };
+
+  purchaseCancelHandler= () => {
+    this.setState({purchasing: false})
+  };
+
   render() {
     let disabledInfo = {...this.state.ingredients};
     for (let key in disabledInfo) {
@@ -70,9 +81,13 @@ class BurgerBuilder extends Component {
     }
     return (
       <Aux>
+        <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+          <OrderSummary ingredients={this.state.ingredients}/>
+        </Modal>
         <Burger ingredients={this.state.ingredients}/>
         <BuildControls ingredientAdd={this.addIngredientHandler}
                        ingredientDrop={this.dropIngredientHandler}
+                       purchasing={this.purchaseHandler}
                        price={this.state.totalPrice}
                        purchasable={this.state.purchasable}
                        disabled={disabledInfo}
