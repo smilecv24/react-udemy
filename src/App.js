@@ -23,20 +23,18 @@ class App extends Component {
   render() {
 
     return (
-      /*{
-        /!*<Layout>
-                {this.state.show ? <BurgerBuilder/> : null}
-                <Checkout/>
-              </Layout>*!/
-      }*/
-    <Layout>
-      <Switch>
-        <Route path='/checkout' component={Checkout}/>
-        <Route path='/' exact component={BurgerBuilder}/>
-      </Switch>
-    </Layout>
-  )
-    ;
+      /*<Layout>
+        {this.state.show ? <BurgerBuilder/> : null}
+        <Checkout/>
+      </Layout>*/
+      <Layout>
+        <Switch>
+          <Route path='/checkout' component={Checkout}/>
+          <Route path='/' exact component={BurgerBuilder}/>
+        </Switch>
+      </Layout>
+    )
+      ;
   }
 
 }
