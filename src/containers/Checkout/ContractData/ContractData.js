@@ -16,7 +16,12 @@ class Contract extends Component {
           type: 'text',
           placeholder: 'Your Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       mail: {
         elementType: 'input',
@@ -24,7 +29,12 @@ class Contract extends Component {
           type: 'email',
           placeholder: 'Your E-mail'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       street: {
         elementType: 'input',
@@ -32,7 +42,12 @@ class Contract extends Component {
           type: 'text',
           placeholder: 'Street'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       postalCode: {
         elementType: 'input',
@@ -40,7 +55,12 @@ class Contract extends Component {
           type: 'text',
           placeholder: 'Post Code'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       country: {
         elementType: 'input',
@@ -48,7 +68,12 @@ class Contract extends Component {
           type: 'text',
           placeholder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -58,10 +83,15 @@ class Contract extends Component {
             {value: 'cheapest', displayValue: 'Cheapest'},
           ]
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: true,
+        touched: true
       }
     },
-
+    formIsValid: false,
     loading: false
   };
 
@@ -94,6 +124,17 @@ class Contract extends Component {
       });
   };
 
+  checkValidity(value, rules) {
+
+    let isValid = false;
+
+    if (rules.required) {
+      isValid = value.trim() !== '';
+    }
+
+    return isValid;
+  }
+
   inputChangedHandler = (event, id) => {
     console.log(event.target.value, id);
 
@@ -106,9 +147,17 @@ class Contract extends Component {
     };
 
     updateFormElement.value = event.target.value;
+    updateFormElement.valid = this.checkValidity(updateFormElement.value, updateFormElement.validation);
+    updateFormElement.touched = true;
 
     updateOrderForm[id] = updateFormElement;
-    this.setState({orderForm: updateOrderForm});
+
+    let formIsValid = true;
+    for (let inputIdentifier in updateOrderForm) {
+      formIsValid = updateOrderForm[inputIdentifier].valid && formIsValid;
+    }
+
+    this.setState({orderForm: updateOrderForm, formIsValid: formIsValid});
 
   };
 
@@ -131,11 +180,14 @@ class Contract extends Component {
           elementType={formElement.config.elementType}
           elementConfig={formElement.config.elementConfig}
           value={formElement.config.value}
+          invalid={!formElement.config.valid}
+          shouldValidate={formElement.config.validation}
+          touched={formElement.config.touched}
           changed={(event) => this.inputChangedHandler(event, formElement.id)}
         />
       ))}
 
-      <Button btnType='Success'>Order</Button>
+      <Button btnType='Success' disabled={!this.state.formIsValid}>Order</Button>
 
     </form>);
     if (this.state.loading) {
