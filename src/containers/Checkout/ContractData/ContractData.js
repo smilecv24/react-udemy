@@ -11,6 +11,7 @@ import classes from './ContractData.css';
 import order from "../../../components/Order/Order";
 
 import * as actions from '../../../store/actions/index';
+import {updateObject, checkValidity} from "../../../shared/utility";
 
 class Contract extends Component {
 
@@ -37,7 +38,8 @@ class Contract extends Component {
         },
         value: '',
         validation: {
-          required: true
+          required: true,
+          isEmail: true
         },
         valid: false,
         touched: false
@@ -134,6 +136,7 @@ class Contract extends Component {
           });*/
   };
 
+/*
   checkValidity(value, rules) {
 
     let isValid = false;
@@ -149,23 +152,34 @@ class Contract extends Component {
 
     return isValid;
   }
+*/
 
   inputChangedHandler = (event, id) => {
     console.log(event.target.value, id);
 
-    const updateOrderForm = {
-      ...this.state.orderForm
-    };
+    const updateFormElement = updateObject(this.state.orderForm[id], {
+      value: event.target.value,
+      valid: checkValidity(event.target.value, this.state.orderForm[id].validation),
+      touch: true
+    });
 
-    const updateFormElement = {
-      ...updateOrderForm[id]
-    };
+    const updateOrderForm = updateObject(this.state.orderForm, {
+      [id]: updateFormElement
+    });
 
-    updateFormElement.value = event.target.value;
-    updateFormElement.valid = this.checkValidity(updateFormElement.value, updateFormElement.validation);
-    updateFormElement.touched = true;
+    // const updateOrderForm = {
+    //   ...this.state.orderForm
+    // };
+    //
+    // const updateFormElement = {
+    //   ...updateOrderForm[id]
+    // };
+    //
+    // updateFormElement.value = event.target.value;
+    // updateFormElement.valid = this.checkValidity(updateFormElement.value, updateFormElement.validation);
+    // updateFormElement.touched = true;
 
-    updateOrderForm[id] = updateFormElement;
+    // updateOrderForm[id] = updateFormElement;
 
     let formIsValid = true;
     for (let inputIdentifier in updateOrderForm) {
